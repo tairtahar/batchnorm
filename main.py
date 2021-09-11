@@ -1,4 +1,4 @@
-from lenet2 import LeNet, LeNetBN1
+from lenet2 import LeNet
 import tensorflow as tf
 
 (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
@@ -13,18 +13,7 @@ y_val = y_train[-2000:]
 x_train = x_train[:-2000, :, :, :]
 y_train = y_train[:-2000]
 input_shape = x_train.get_shape().as_list()[1:]
-
-output_shape = 10
-batch_size = 128
-num_epochs = 5
-learning_rate = 0.0001
-
-lenet_model = LeNet(input_shape=input_shape, output_size=output_shape)
-lenet_model.model_compilation()
-lenet_model.train(x_train, y_train, x_val, y_val, batch_size=batch_size, epochs=num_epochs, verbose=1)
+lenet_model = LeNet(input_shape=input_shape, output_size=10)
+lenet_model.model_compilation(optimizer='adam')
+lenet_model.train(x_train, y_train, x_val, y_val, batch_size=256, epochs=5, verbose=1)
 lenet_model.evaluate(x_test, y_test, verbose=1)
-
-
-
-
-

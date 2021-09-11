@@ -1,14 +1,11 @@
 from tensorflow.keras import layers, models
 from tensorflow.keras.layers import Dense
 import tensorflow as tf
-import numpy as np
-import tensorflow.keras.backend as k
 
 
 class LeNet(tf.keras.Model):
     def __init__(self, input_shape, output_size=10):
-        super(LeNet, self).__init__(input_shape)
-
+        super(LeNet, self).__init__()
         if input_shape is None:
             input_shape = (32, 32, 1)
         self.input1 = layers.Input(shape=input_shape)
@@ -17,7 +14,6 @@ class LeNet(tf.keras.Model):
                                 kernel_size=(5, 5),
                                 padding='valid',
                                 activation='relu')(self.input1)
-
         self.s2 = layers.AveragePooling2D(padding='valid')(self.c1)
         self.c3 = layers.Conv2D(filters=16,
                                 kernel_size=(3, 3),
@@ -35,8 +31,8 @@ class LeNet(tf.keras.Model):
             activation=tf.nn.softmax)(self.f6)
         self.model = models.Model(inputs=self.input1, outputs=self.output_layer)
 
-    def model_compilation(self):
-        self.model.compile(optimizer='sgd', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    def model_compilation(self, optimizer):
+        self.model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
         print("compilation done")
 
     def train(self, x_train, y_train, x_val, y_val, batch_size=128, epochs=5, verbose=0):
@@ -47,18 +43,9 @@ class LeNet(tf.keras.Model):
         print("model training done")
 
     def evaluate(self, x_test, y_test, verbose=0):
-        score = self.model.evaluate(x_test, y_test, verbose=verbose)
+        score = self.model.evaluate(x_test, y_test, verbose=0)
         print('test loss:', score[0])
         print('test accuracy:', score[1])
-
-
-def batch_norm(x):
-    epsilon = 0
-    mu1 = k.mean(x, axis=2)
-    sigma1 = np.var(x)
-    x_hat = (x - mu1) / (sigma1 + epsilon)
-    # y = gamma_param * x_hat + beta_param
-    return x_hat
 
 
 class LeNetBN1(LeNet):
