@@ -18,8 +18,8 @@ y_val = y_train[-2000:]
 x_train = x_train[:-2000, :, :, :]
 y_train = y_train[:-2000]
 input_shape = x_train.get_shape().as_list()[1:]
-lenet_model = LeNet(input_shape=input_shape, output_size=10)
-# lenet_model = LeNetBN1(input_shape=input_shape, output_size=10)
+# lenet_model = LeNet(input_shape=input_shape, output_size=10)
+lenet_model = LeNetBN1(input_shape=input_shape, output_size=10)
 lenet_model.model_compilation(optimizer='sgd')
 history = lenet_model.train(x_train, y_train, x_val, y_val, batch_size=256, epochs=5, verbose=1)  # steps_per_epoch=200,
 lenet_model.evaluate(x_test, y_test, verbose=1)
