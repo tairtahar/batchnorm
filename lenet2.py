@@ -66,14 +66,15 @@ class LeNetBN1(LeNet):
         self.model = models.Model(inputs=self.input1, outputs=self.output_layer)
 
 
-class LeNetBN2(LeNet):
+class LeNetBN2(LeNetBN1):
     def __init__(self, input_shape, batch_size, output_size=10):
-        super().__init__(input_shape)
-        # self.norm1 = layers.Lambda(batch_norm)(self.c1)
-        self.affine1 = BatchNormLayer(self.c1.shape[1:], batch_size)(self.c1)
-        self.s2 = layers.AveragePooling2D(padding='valid')(self.affine1)
+        super().__init__(input_shape, batch_size)
+        self.c3 = layers.Conv2D(filters=16,
+                                kernel_size=(3, 3),
+                                padding='valid')(self.s2)  # no activation
         self.affine2 = BatchNormLayer(self.c3.shape[1:], batch_size)(self.c3)
-        self.s4 = layers.AveragePooling2D(padding='valid')(self.affine2)
+        self.activated2 = tf.keras.activations.sigmoid(self.affine2)
+        self.s4 = layers.AveragePooling2D(padding='valid')(self.activated2)
         self.model = models.Model(inputs=self.input1, outputs=self.output_layer)
 
 
