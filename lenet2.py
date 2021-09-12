@@ -1,3 +1,4 @@
+import numpy as np
 from tensorflow.keras import layers, models
 from tensorflow.keras.layers import Dense
 import tensorflow as tf
@@ -51,10 +52,10 @@ class LeNet(tf.keras.Model):
 
 
 class LeNetBN1(LeNet):
-    def __init__(self, input_shape, output_size=10):
+    def __init__(self, input_shape, batch_size, output_size=10):
         super().__init__(input_shape)
         # self.norm1 = layers.Lambda(batch_norm)(self.c1)
-        self.affine1 = BatchNormLayer(input_shape)(self.c1)
+        self.affine1 = BatchNormLayer(self.c1.shape[1:], batch_size)(self.c1)
         self.s2 = layers.AveragePooling2D(padding='valid')(self.affine1)
         # self.bn2 = layers.Lambda(batch_norm)(self.c3)
         # self.s4 = layers.AveragePooling2D(padding='valid')(self.bn2)
@@ -62,40 +63,32 @@ class LeNetBN1(LeNet):
 
 
 class BatchNormLayer(tf.keras.layers.Layer):
-    def __init__(self, input_shape):
+    def __init__(self, input_shape, batch_size):
         super().__init__()
         # self.units = units
-        gamma_init = tf.random_normal_initializer()
+        gamma_init = tf.ones_initializer()
         self.gamma = tf.Variable(
-            initial_value=gamma_init(shape=(input_shape[1:]),
+            initial_value=gamma_init(shape=input_shape,
                                      dtype='float32'),
             trainable=True)
         beta_init = tf.zeros_initializer()
         self.beta = tf.Variable(
-            initial_value=beta_init(shape=(input_shape[1:]), dtype='float32'),
+            initial_value=beta_init(shape=input_shape, dtype='float32'),
             trainable=True)
-
-    # def build(self, input_shape):  # Create the state of the layer (weights)
-    # gamma_init = tf.random_normal_initializer()
-    # self.gamma = tf.Variable(
-    #     initial_value=gamma_init(shape=(input_shape[1:]),
-    #                              dtype='float32'),
-    #     trainable=True)
-    # beta_init = tf.zeros_initializer()
-    # self.beta = tf.Variable(
-    #     initial_value=beta_init(shape=(input_shape[1:]), dtype='float32'),
-    #     trainable=True)
+        self.batch_size = batch_size
 
     def call(self, inputs):  # , training=None):  # Defines the computation from inputs to outputs
         # if training:
         epsilon = 0.00000001
-        mu = K.mean(inputs, axis=0)
-        variance = K.var(inputs)
-        x_hat = (inputs - mu) / (variance + epsilon)
-        # gamma_rep = k.expand_dims(self.gamma, axis=1)
-        # beta_rep = k.expand_dims(self.beta, axis=1)
-        # gamma_rep = k.repeat_elements(gamma_rep, inputs.shape[0], 1)
-        # beta_rep = k.repeat_elements(beta_rep, inputs.shape[0], 1)
-        # # for i in range(1,inputs.shape()[0]): # replace inputs with x_hat
-        # outputs = x_hat * gamma_rep + beta_rep
-        return x_hat  # outputs
+        num_inputs, height, width, channels = inputs.shape
+        print('inputs shape', inputs.shape)
+        mu = K.mean(inputs, axis=(0, 1, 2), keepdims=True)
+        variance = K.var(inputs, axis=(0, 1, 2), keepdims=True)
+
+        x_hat = (inputs - mu) / K.sqrt(variance + epsilon)
+        print(self.gamma.shape)
+        print(x_hat.shape)
+        print(self.beta.shape)
+        outputs = self.gamma * x_hat + self.beta
+
+        return outputs
