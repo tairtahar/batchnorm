@@ -15,7 +15,8 @@ class LeNet(tf.keras.Model):
                                 input_shape=input_shape,
                                 kernel_size=(5, 5),
                                 padding='valid',
-                                activation='sigmoid')(self.input1)
+                                activation='sigmoid'
+                                )(self.input1)
         self.s2 = layers.AveragePooling2D(padding='valid')(self.c1)
         self.c3 = layers.Conv2D(filters=16,
                                 kernel_size=(3, 3),
@@ -54,11 +55,14 @@ class LeNet(tf.keras.Model):
 class LeNetBN1(LeNet):
     def __init__(self, input_shape, batch_size, output_size=10):
         super().__init__(input_shape)
-        # self.norm1 = layers.Lambda(batch_norm)(self.c1)
+        self.c1 = layers.Conv2D(filters=6,
+                                input_shape=input_shape,
+                                kernel_size=(5, 5),
+                                padding='valid',
+                                )(self.input1)  # no activation
         self.affine1 = BatchNormLayer(self.c1.shape[1:], batch_size)(self.c1)
-        self.s2 = layers.AveragePooling2D(padding='valid')(self.affine1)
-        # self.bn2 = layers.Lambda(batch_norm)(self.c3)
-        # self.s4 = layers.AveragePooling2D(padding='valid')(self.bn2)
+        self.activated1 = tf.keras.activations.sigmoid(self.affine1)
+        self.s2 = layers.AveragePooling2D(padding='valid')(self.activated1)
         self.model = models.Model(inputs=self.input1, outputs=self.output_layer)
 
 
