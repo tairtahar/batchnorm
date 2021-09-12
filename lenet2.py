@@ -15,19 +15,19 @@ class LeNet(tf.keras.Model):
                                 input_shape=input_shape,
                                 kernel_size=(5, 5),
                                 padding='valid',
-                                activation='relu')(self.input1)
+                                activation='sigmoid')(self.input1)
         self.s2 = layers.AveragePooling2D(padding='valid')(self.c1)
         self.c3 = layers.Conv2D(filters=16,
                                 kernel_size=(3, 3),
                                 padding='valid',
-                                activation='relu')(self.s2)
+                                activation='sigmoid')(self.s2)
         self.s4 = layers.AveragePooling2D(padding='valid')(self.c3)
         self.flatten = layers.Flatten()(self.s4)
         self.c5 = layers.Dense(units=120,
-                               activation='relu')(self.flatten)
+                               activation='sigmoid')(self.flatten)
         self.f6 = layers.Dense(
             units=84,
-            activation='relu')(self.c5)
+            activation='sigmoid')(self.c5)
         self.output_layer = layers.Dense(
             units=output_size,
             activation=tf.nn.softmax)(self.f6)
@@ -80,15 +80,9 @@ class BatchNormLayer(tf.keras.layers.Layer):
     def call(self, inputs):  # , training=None):  # Defines the computation from inputs to outputs
         # if training:
         epsilon = 0.00000001
-        num_inputs, height, width, channels = inputs.shape
-        print('inputs shape', inputs.shape)
         mu = K.mean(inputs, axis=(0, 1, 2), keepdims=True)
         variance = K.var(inputs, axis=(0, 1, 2), keepdims=True)
-
         x_hat = (inputs - mu) / K.sqrt(variance + epsilon)
-        print(self.gamma.shape)
-        print(x_hat.shape)
-        print(self.beta.shape)
         outputs = self.gamma * x_hat + self.beta
 
         return outputs
