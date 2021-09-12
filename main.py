@@ -1,6 +1,7 @@
-from lenet2 import LeNet, LeNetBN1, LeNetBN2
+from lenet2 import LeNet, LeNetBN1, LeNetBN2, LeNetFCBN1
 import tensorflow as tf
 import matplotlib.pyplot as plt
+
 
 (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
 
@@ -35,8 +36,8 @@ y_train = y_train[:-2000]
 input_shape = x_train.shape[1:]
 # lenet_model = LeNet(input_shape=input_shape, output_size=10)
 batch_size = 256
-lenet_model = LeNetBN2(input_shape=input_shape, batch_size=batch_size, output_size=10)
-lenet_model.model_compilation(optimizer='adam')
+lenet_model = LeNetFCBN1(input_shape=input_shape, batch_size=batch_size, output_size=10)
+lenet_model.model_compilation(optimizer='sgd')
 history = lenet_model.train(x_train, y_train, x_val, y_val, batch_size=batch_size, epochs=15,
                             verbose=1)  # steps_per_epoch=200,
 lenet_model.evaluate(x_test, y_test, verbose=1)
