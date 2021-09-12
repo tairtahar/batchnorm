@@ -12,3 +12,17 @@ def model_selection(network, input_shape, output_size, batch_size):
         lenet_model = LeNetFCBN1(input_shape=input_shape, batch_size=batch_size, output_size=output_size)
 
     return lenet_model
+
+
+def model_exexution(network, data, output_size, batch_size, optimizer, epochs, verbose):
+    x_train, x_val, x_test, y_val, y_train, y_test = data
+    input_shape = x_train.shape[1:]
+    lenet_model = model_selection(network, input_shape, output_size, batch_size)
+    lenet_model.model_compilation(optimizer=optimizer)
+    history = lenet_model.train(x_train, y_train, x_val, y_val,
+                                batch_size=batch_size,
+                                epochs=epochs,
+                                verbose=verbose)
+    lenet_model.evaluate(x_test, y_test, verbose=verbose)
+
+    return history

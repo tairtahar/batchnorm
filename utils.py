@@ -38,10 +38,10 @@ def data_prepare():
     x_train, x_test, y_train, y_test = divide_data(x, y, -10000)
     x_train = zero_padding_and_norm(x_train)
     x_test = zero_padding_and_norm(x_test)
-    x_train, x_val, y_train, y_val = divide_data(x, y, -2000)
+    x_train, x_val, y_train, y_val = divide_data(x_train, y_train, -2000)
     x_train = tf.expand_dims(x_train, axis=3, name=None)
     x_test = tf.expand_dims(x_test, axis=3, name=None)
-
-    return x_train, x_val, x_test, y_val, y_train, y_test
+    data = x_train, x_val, x_test, y_val, y_train, y_test
+    return data
 
 
