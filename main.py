@@ -1,4 +1,4 @@
-import models
+import models_handling
 import utils
 import visualizations
 
@@ -8,16 +8,16 @@ def main():
     data = utils.data_prepare()
 
     # Parameters definition. Please adjust and choose a network
-    batch_size = 256
-    epochs = 15
+    batch_size = 64
+    epochs = 10
     output_size = 10
-    optimizer = 'sgd'
+    optimizer = 'adam'
     verbose = 1
     flag_visualizations = 1
-    network = 'lenet_bn1'  # , 'lenet_bn2', 'lenet_fc_bn1' 'lenet'
+    network = 'lenet'   #  'lenet_bn1'# , 'lenet_bn1', 'lenet_fc_bn1' 'lenet' lenet_bn2
 
     # Model creation and training
-    history = models.model_exexution(network, data, output_size, batch_size, optimizer, epochs, verbose)
+    history = models_handling.model_execution(network, data, output_size, batch_size, optimizer, epochs, verbose)
 
     # Visualizations of the training process
     if flag_visualizations:

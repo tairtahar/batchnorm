@@ -41,6 +41,7 @@ def data_prepare():
     x_train, x_val, y_train, y_val = divide_data(x_train, y_train, -2000)
     x_train = tf.expand_dims(x_train, axis=3, name=None)
     x_test = tf.expand_dims(x_test, axis=3, name=None)
+    x_val = tf.expand_dims(x_val, axis=3, name=None)
     data = x_train, x_val, x_test, y_val, y_train, y_test
     return data
 
