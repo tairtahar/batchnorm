@@ -3,15 +3,20 @@ from lenet import LeNet, LeNetBN1, LeNetBN2, LeNetFCBN1, LeNetFCBN2
 
 def model_selection(network, input_shape, output_size):
     if network == 'lenet':
+        print("Chosen network is LeNet")
         lenet_model = LeNet(input_shape=input_shape, output_size=output_size)
     elif network == 'lenet_bn1':
-        lenet_model = LeNetBN1(input_shape=input_shape, output_size=output_size)
+        print("Chosen network is LeNet with Batchnorm on first convolution layer")
+        lenet_model = LeNetBN1(input_shape=input_shape, output_size=output_size, window=5)
     elif network == 'lenet_bn2':
-        lenet_model = LeNetBN2(input_shape=input_shape, output_size=output_size)
+        print("Chosen network is LeNet with Batchnorm on first + second convolution layers")
+        lenet_model = LeNetBN2(input_shape=input_shape, output_size=output_size, window=5)
     elif network == 'lenet_fc_bn1':
-        lenet_model = LeNetFCBN1(input_shape=input_shape, output_size=output_size)
+        print("Chosen network is LeNet with Batchnorm on first + second convolution layers + fully connected layer")
+        lenet_model = LeNetFCBN1(input_shape=input_shape, output_size=output_size, window=5)
     else:
-        lenet_model = LeNetFCBN2(input_shape=input_shape, output_size=output_size)
+        print("Chosen network is LeNet with Batchnorm on first + second convolution layers + 2 fully connected layers")
+        lenet_model = LeNetFCBN2(input_shape=input_shape, output_size=output_size, window=5)
 
     return lenet_model
 
