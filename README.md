@@ -15,4 +15,5 @@ The projects contains the following files and directories:
     c. lenet.py - where the network classes are defined. Here you can find the original network, and the variations that include the batch normalization. 
     d. utils.py - functions mainly for loading and preprocessing the data.
     e. visualizations.py - where the functions for plotting accuracy and loss graphs are.
+    f. results - where it is possible to visualize the training and validation accuracy during the training of each of the networks used.
 
