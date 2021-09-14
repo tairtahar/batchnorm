@@ -63,7 +63,7 @@ class LeNet(tf.keras.Model):
 
 
 class LeNetBN1(LeNet):
-    def __init__(self, input_shape, output_size=10):
+    def __init__(self, input_shape):
         super().__init__(input_shape)
         self.c1 = layers.Conv2D(filters=6,
                                 input_shape=input_shape,
@@ -109,8 +109,8 @@ class LeNetBN1(LeNet):
 
 
 class LeNetBN2(LeNetBN1):
-    def __init__(self, input_shape, batch_size, output_size=10):
-        super().__init__(input_shape, batch_size)
+    def __init__(self, input_shape):
+        super().__init__(input_shape)
         self.c3 = layers.Conv2D(filters=16,
                                 kernel_size=(3, 3),
                                 padding='valid')  # no activation
@@ -129,16 +129,6 @@ class LeNetBN2(LeNetBN1):
         x = self.c5(x)
         x = self.f6(x)
         return self.output_layer(x)
-
-
-class LeNetFCBN1(LeNet):
-    def __init__(self, input_shape, batch_size, output_size=10):
-        super().__init__(input_shape)
-        self.c5 = layers.Dense(units=120)(self.flatten)
-        self.affine3 = BatchNormFCLayer(batch_size)(self.c5)
-        self.activated3 = tf.keras.activations.sigmoid(self.affine3)
-        self.f6 = layers.Dense(units=84, activation='relu')(self.activated3)
-        # self.model = models.Model(inputs=self.input1, outputs=self.output_layer)
 
 
 class BatchNormLayer(tf.keras.layers.Layer):
@@ -161,10 +151,31 @@ class BatchNormLayer(tf.keras.layers.Layer):
         return outputs
 
 
+class LeNetFCBN1(LeNetBN2):
+    def __init__(self, input_shape):
+        super().__init__(input_shape)
+        self.c5 = layers.Dense(units=120)  # No activation
+        self.affine3 = BatchNormFCLayer()
+
+    def call(self, inputs):
+        x = self.c1(inputs)
+        x = self.affine1(x)
+        x = tf.keras.activations.sigmoid(x)
+        x = self.s2(x)
+        x = self.c3(x)
+        x = self.affine2(x)
+        x = tf.keras.activations.sigmoid(x)
+        x = self.s4(x)
+        x = self.flatten(x)
+        x = self.c5(x)
+        x = self.affine3(x)
+        x = tf.keras.activations.sigmoid(x)
+        x = self.f6(x)
+        return self.output_layer(x)
+
 class BatchNormFCLayer(tf.keras.layers.Layer):  # for the case of fully connected (1D inputs)
     def __init__(self):
         super().__init__()
-        # self.units = units
         gamma_init = tf.ones_initializer()
         self.gamma = tf.Variable(
             initial_value=gamma_init(shape=[1], dtype='float32'), trainable=True)
@@ -172,7 +183,7 @@ class BatchNormFCLayer(tf.keras.layers.Layer):  # for the case of fully connecte
         self.beta = tf.Variable(
             initial_value=beta_init(shape=[1], dtype='float32'), trainable=True)
 
-    def call(self, inputs, training=None):  # Defines the computation from inputs to outputs
+    def call(self, inputs):  # Defines the computation from inputs to outputs
         epsilon = 0.00000001
         mu = K.mean(inputs, axis=0)
         variance = K.var(inputs, axis=0)
