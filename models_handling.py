@@ -1,4 +1,4 @@
-from lenet import LeNet, LeNetBN1, LeNetBN2, LeNetFCBN1
+from lenet import LeNet, LeNetBN1, LeNetBN2, LeNetFCBN1, LeNetFCBN2
 
 
 def model_selection(network, x_train, input_shape, output_size, batch_size):
@@ -10,6 +10,8 @@ def model_selection(network, x_train, input_shape, output_size, batch_size):
         lenet_model = LeNetBN2(input_shape=input_shape)
     elif network == 'lenet_fc_bn1':
         lenet_model = LeNetFCBN1(input_shape=input_shape)
+    else:
+        lenet_model = LeNetFCBN2(input_shape=input_shape)
 
     return lenet_model
 

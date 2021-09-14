@@ -14,7 +14,7 @@ def main():
     optimizer = 'adam'
     verbose = 1
     flag_visualizations = 1
-    network = 'lenet_fc_bn1'  #  # ,'lenet' 'lenet_bn1' ,  'lenet' lenet_bn2  'lenet_bn2'
+    network = 'lenet_fc_bn2'  #  # ,'lenet' 'lenet_bn1' ,  'lenet' lenet_bn2  'lenet_bn2' 'lenet_fc_bn2'
 
     # Model creation and training
     history = models_handling.model_execution(network=network,

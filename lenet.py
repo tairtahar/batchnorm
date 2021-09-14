@@ -173,6 +173,32 @@ class LeNetFCBN1(LeNetBN2):
         x = self.f6(x)
         return self.output_layer(x)
 
+
+class LeNetFCBN2(LeNetFCBN1):
+    def __init__(self, input_shape):
+        super().__init__(input_shape)
+        self.f6 = layers.Dense(units=84)  # No activation
+        self.affine4 = BatchNormFCLayer()
+
+    def call(self, inputs):
+        x = self.c1(inputs)
+        x = self.affine1(x)
+        x = tf.keras.activations.sigmoid(x)
+        x = self.s2(x)
+        x = self.c3(x)
+        x = self.affine2(x)
+        x = tf.keras.activations.sigmoid(x)
+        x = self.s4(x)
+        x = self.flatten(x)
+        x = self.c5(x)
+        x = self.affine3(x)
+        x = tf.keras.activations.sigmoid(x)
+        x = self.f6(x)
+        x = self.affine4(x)
+        x = tf.keras.activations.sigmoid(x)
+        return self.output_layer(x)
+
+
 class BatchNormFCLayer(tf.keras.layers.Layer):  # for the case of fully connected (1D inputs)
     def __init__(self):
         super().__init__()
