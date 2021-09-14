@@ -13,6 +13,6 @@ The projects contains the following files and directories:
         
     b. models_handling.py - lower level than main. Here the selected model is recognized, compiled, trained and evaluated.
     c. lenet.py - where the network classes are defined. Here you can find the original network, and the variations that include the batch normalization. 
-    d. utils.py - where the instruments for mainly loading and preprocessing the data.
+    d. utils.py - functions mainly for loading and preprocessing the data.
     e. visualizations.py - where the functions for plotting accuracy and loss graphs are.
 
