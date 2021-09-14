@@ -1,10 +1,14 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def plot_accuracy(history):
     # Accuracy plot
     plt.plot(history.history['accuracy'])
     plt.plot(history.history['val_accuracy'])
+    plt.yticks(np.arange(0.5,1,0.02))
+    plt.grid(which='major', linestyle=':', alpha=0.6)
+    plt.ylim([0.7, 1])
     plt.title('model accuracy')
     plt.ylabel('accuracy')
     plt.xlabel('epoch')

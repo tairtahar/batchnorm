@@ -57,14 +57,14 @@ class LeNet(tf.keras.Model):
         return history
 
     def evaluation(self, x_test, y_test, verbose=0):
-        score = self.evaluate(x_test, y_test, verbose=0)
+        score = self.evaluate(x_test, y_test, verbose=verbose)
         print('test loss:', score[0])
         print('test accuracy:', score[1])
 
 
 class LeNetBN1(LeNet):
-    def __init__(self, input_shape):
-        super().__init__(input_shape)
+    def __init__(self, input_shape, output_size):
+        super().__init__(input_shape, output_size)
         self.c1 = layers.Conv2D(filters=6,
                                 input_shape=input_shape,
                                 kernel_size=(5, 5),
@@ -109,8 +109,8 @@ class LeNetBN1(LeNet):
 
 
 class LeNetBN2(LeNetBN1):
-    def __init__(self, input_shape):
-        super().__init__(input_shape)
+    def __init__(self, input_shape, output_size):
+        super().__init__(input_shape, output_size)
         self.c3 = layers.Conv2D(filters=16,
                                 kernel_size=(3, 3),
                                 padding='valid')  # no activation
@@ -152,8 +152,8 @@ class BatchNormLayer(tf.keras.layers.Layer):
 
 
 class LeNetFCBN1(LeNetBN2):
-    def __init__(self, input_shape):
-        super().__init__(input_shape)
+    def __init__(self, input_shape, output_size):
+        super().__init__(input_shape, output_size)
         self.c5 = layers.Dense(units=120)  # No activation
         self.affine3 = BatchNormFCLayer()
 
@@ -175,8 +175,8 @@ class LeNetFCBN1(LeNetBN2):
 
 
 class LeNetFCBN2(LeNetFCBN1):
-    def __init__(self, input_shape):
-        super().__init__(input_shape)
+    def __init__(self, input_shape, output_size):
+        super().__init__(input_shape, output_size)
         self.f6 = layers.Dense(units=84)  # No activation
         self.affine4 = BatchNormFCLayer()
 
