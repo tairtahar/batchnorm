@@ -14,10 +14,16 @@ def main():
     optimizer = 'adam'
     verbose = 1
     flag_visualizations = 1
-    network = 'lenet'   #  'lenet_bn1'# , 'lenet_bn1', 'lenet_fc_bn1' 'lenet' lenet_bn2
+    network =  'lenet_bn1' #  # ,'lenet'  'lenet_bn1', 'lenet_fc_bn1' 'lenet' lenet_bn2
 
     # Model creation and training
-    history = models_handling.model_execution(network, data, output_size, batch_size, optimizer, epochs, verbose)
+    history = models_handling.model_execution(network=network,
+                                              data=data,
+                                              output_size=output_size,
+                                              batch_size=batch_size,
+                                              optimizer=optimizer,
+                                              epochs=epochs,
+                                              verbose=verbose)
 
     # Visualizations of the training process
     if flag_visualizations:
