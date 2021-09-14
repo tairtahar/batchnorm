@@ -72,8 +72,7 @@ class LeNetBN1(LeNet):
                                 )  # no activation
         self.affine1 = BatchNormLayer([28, 28, 6])
 
-    def call(self, inputs, training=False):
-        # if training:
+    def call(self, inputs):
         x = self.c1(inputs)
         x = self.affine1(x)
         x = tf.keras.activations.sigmoid(x)
@@ -114,11 +113,22 @@ class LeNetBN2(LeNetBN1):
         super().__init__(input_shape, batch_size)
         self.c3 = layers.Conv2D(filters=16,
                                 kernel_size=(3, 3),
-                                padding='valid')(self.s2)  # no activation
-        self.affine2 = BatchNormLayer(self.c3.shape[1:], batch_size)(self.c3)
-        self.activated2 = tf.keras.activations.sigmoid(self.affine2)
-        self.s4 = layers.AveragePooling2D(padding='valid')(self.activated2)
-        self.model = models.Model(inputs=self.input1, outputs=self.output_layer)
+                                padding='valid')  # no activation
+        self.affine2 = BatchNormLayer([12, 12, 16])
+
+    def call(self, inputs):
+        x = self.c1(inputs)
+        x = self.affine1(x)
+        x = tf.keras.activations.sigmoid(x)
+        x = self.s2(x)
+        x = self.c3(x)
+        x = self.affine2(x)
+        x = tf.keras.activations.sigmoid(x)
+        x = self.s4(x)
+        x = self.flatten(x)
+        x = self.c5(x)
+        x = self.f6(x)
+        return self.output_layer(x)
 
 
 class LeNetFCBN1(LeNet):
@@ -134,8 +144,6 @@ class LeNetFCBN1(LeNet):
 class BatchNormLayer(tf.keras.layers.Layer):
     def __init__(self, input_shape):
         super().__init__()
-
-        # def build(self, input_shape):
         gamma_init = tf.ones_initializer()
         self.gamma = tf.Variable(
             initial_value=gamma_init(shape=input_shape, dtype='float32'), trainable=True)
@@ -144,7 +152,6 @@ class BatchNormLayer(tf.keras.layers.Layer):
             initial_value=beta_init(shape=input_shape, dtype='float32'), trainable=True)
 
     def call(self, inputs, training=None):  # Defines the computation from inputs to outputs
-        # if training:
         epsilon = 0.00000001
         mu = K.mean(inputs, axis=(0, 1, 2), keepdims=True)
         variance = K.var(inputs, axis=(0, 1, 2), keepdims=True)
