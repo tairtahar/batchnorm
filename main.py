@@ -18,7 +18,7 @@ def main():
     '''You cab choose (copy to the next line) one of the following:
     (1)'lenet' (no BN) ; (2)'lenet_bn1' (first conv layer has BN) ; (3)'lenet_bn2' (first+second conv layers have BN);
     (4)lenet_fc_bn1 (conv+first FC layer have BN) ; (5)'lenet_fc_bn2' (all layers with BN);'''
-    network = 'lenet_fc_bn2'
+    network = 'lenet'
     # Model creation and training
     history = models_handling.model_execution(network=network,
                                               data=data,

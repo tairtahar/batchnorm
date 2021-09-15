@@ -22,6 +22,7 @@ def model_selection(network, input_shape, output_size, window_size):
 
 
 def model_execution(network, data, output_size, batch_size, optimizer, epochs, window_size, verbose):
+    """This function executes all the steps: model creation, compilation, training, and evaluation"""
     x_train, x_val, x_test, y_val, y_train, y_test = data
     input_shape = x_train.shape[1:]
     lenet_model = model_selection(network, input_shape, output_size, window_size)

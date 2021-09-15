@@ -64,7 +64,8 @@ class LeNet(tf.keras.Model):
 
 
 class LeNetBN1(LeNet):
-    """Extends LeNet with batch normalization on the first convolutional layer"""
+    """Extends LeNet with batch normalization on the first convolutional layer. c1 is overrode to not have activation,
+    then the following batchnorm layer affine1 is created"""
     def __init__(self, input_shape, output_size, window):
         super().__init__(input_shape, output_size)
         self.c1 = layers.Conv2D(filters=6,
@@ -88,7 +89,9 @@ class LeNetBN1(LeNet):
 
 
 class LeNetBN2(LeNetBN1):
-    """Extends LeNetBN1 adding batch normalization also on the second convolutional layer"""
+    """Extends LeNetBN1 adding batch normalization also on the second convolutional layer.
+     c3 is overrode to not have activation,
+    then the following batchnorm layer affine3 is created"""
     def __init__(self, input_shape, output_size, window):
         super().__init__(input_shape, output_size, window)
         self.c3 = layers.Conv2D(filters=16,
@@ -112,7 +115,15 @@ class LeNetBN2(LeNetBN1):
 
 
 class BatchNormLayer(tf.keras.layers.Layer):
-    """implementation of the batch normalization layer for convolutional case"""
+    """implementation of the batch normalization layer for convolutional case.
+    We create class variables such as gamma and beta with the relevant shape for the convolutional case to be trained.
+    Also creating list of the accumulating tensors of moving_mean and moving_variance that are expected to grow up to
+    window size. They are helpful for the last part of batchnorm algorithm where another affine transformation is
+    performed using the averages. The 'call' function encapsulates all the calculations needed for the batchnorm layer:
+    mean and variance calculation, and then with the helper function batchnorm_calculations the cases of training
+    and testing is handled separately. For the training algorithm 1 from the paper is performed. For the testing case
+    we are making use of the moving window averaging which is last part of the interference algorithm
+    (algorithm 2 in the paper)"""
     def __init__(self, input_shape, window):
         super().__init__()
         gamma_init = tf.ones_initializer()
@@ -134,7 +145,9 @@ class BatchNormLayer(tf.keras.layers.Layer):
 
 
 class LeNetFCBN1(LeNetBN2):
-    """LeNet with batchnorm on 2 conv layers and first fully connected layer"""
+    """LeNet with batchnorm on 2 conv layers and first fully connected layer. c5 is overrode to not have activation,
+    then the following batchnorm layer affine3 is created
+    """
     def __init__(self, input_shape, output_size, window):
         super().__init__(input_shape, output_size, window)
         self.c5 = layers.Dense(units=120)  # No activation
@@ -184,6 +197,9 @@ class LeNetFCBN2(LeNetFCBN1):
 
 
 class BatchNormFCLayer(tf.keras.layers.Layer):  # for the case of fully connected (1D inputs)
+    """ We create class variables such as gamma and beta to be trained. Also creating list of the accumulating
+    tensors of moving_mean and moving_variance that are expected to grow up to window size. They are helpful for the
+    last part of batchnorm algorithm where another affine transformation is performed using the averages """
     def __init__(self, window):
         super().__init__()
         gamma_init = tf.ones_initializer()
@@ -205,7 +221,11 @@ class BatchNormFCLayer(tf.keras.layers.Layer):  # for the case of fully connecte
 
 
 def batchnorm_calculations(curr_layer, mu, variance, inputs, epsilon, training):
-    """This function contains the needed calculations for the the inference model"""
+    """This function contains the needed calculations for the the inference model
+    if we are in the training stage, than we create a layer with the affine transformation to create y from x_hat
+    (in the paper this is algorithm 1).
+    Then in the case of testing, we perform calculation for the moving average. This is the last part of algorithm 2
+     in the paper. This function is used for both the convolutional case and the fully connected case"""
     if training:  # In case of training, perform batch normalization to learn beta and gamma
         x_hat = (inputs - mu) / K.sqrt(variance + epsilon)
         outputs = curr_layer.gamma * x_hat + curr_layer.beta
