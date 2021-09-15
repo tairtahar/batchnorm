@@ -10,8 +10,9 @@ def main():
     # Parameters definition. Please adjust params and choose a network
     batch_size = 64
     epochs = 25
-    output_size = 10
+    output_size = 10  # mnist has 10 possible classes
     optimizer = 'adam'
+    window_size = 5  # for the moving average in the last part of batchnorm algorithm
     verbose = 1
     flag_visualizations = 1
     '''You cab choose (copy to the next line) one of the following:
@@ -25,6 +26,7 @@ def main():
                                               batch_size=batch_size,
                                               optimizer=optimizer,
                                               epochs=epochs,
+                                              window_size=window_size,
                                               verbose=verbose)
     # Visualizations of the training process
     if flag_visualizations:

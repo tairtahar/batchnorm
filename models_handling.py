@@ -1,30 +1,30 @@
 from lenet import LeNet, LeNetBN1, LeNetBN2, LeNetFCBN1, LeNetFCBN2
 
 
-def model_selection(network, input_shape, output_size):
+def model_selection(network, input_shape, output_size, window_size):
     if network == 'lenet':
         print("Chosen network is LeNet")
         lenet_model = LeNet(input_shape=input_shape, output_size=output_size)
     elif network == 'lenet_bn1':
         print("Chosen network is LeNet with Batchnorm on first convolution layer")
-        lenet_model = LeNetBN1(input_shape=input_shape, output_size=output_size, window=5)
+        lenet_model = LeNetBN1(input_shape=input_shape, output_size=output_size, window=window_size)
     elif network == 'lenet_bn2':
         print("Chosen network is LeNet with Batchnorm on first + second convolution layers")
-        lenet_model = LeNetBN2(input_shape=input_shape, output_size=output_size, window=5)
+        lenet_model = LeNetBN2(input_shape=input_shape, output_size=output_size, window=window_size)
     elif network == 'lenet_fc_bn1':
         print("Chosen network is LeNet with Batchnorm on first + second convolution layers + fully connected layer")
-        lenet_model = LeNetFCBN1(input_shape=input_shape, output_size=output_size, window=5)
+        lenet_model = LeNetFCBN1(input_shape=input_shape, output_size=output_size, window=window_size)
     else:
         print("Chosen network is LeNet with Batchnorm on first + second convolution layers + 2 fully connected layers")
-        lenet_model = LeNetFCBN2(input_shape=input_shape, output_size=output_size, window=5)
+        lenet_model = LeNetFCBN2(input_shape=input_shape, output_size=output_size, window=window_size)
 
     return lenet_model
 
 
-def model_execution(network, data, output_size, batch_size, optimizer, epochs, verbose):
+def model_execution(network, data, output_size, batch_size, optimizer, epochs, window_size, verbose):
     x_train, x_val, x_test, y_val, y_train, y_test = data
     input_shape = x_train.shape[1:]
-    lenet_model = model_selection(network, input_shape, output_size)
+    lenet_model = model_selection(network, input_shape, output_size, window_size)
     lenet_model.model_compilation(optimizer=optimizer)
     history = lenet_model.train(x_train, y_train, x_val, y_val,
                                 batch_size=batch_size,
