@@ -50,9 +50,13 @@ class LeNet(tf.keras.Model):
         print("compilation done")
 
     def train(self, x_train, y_train, x_val, y_val, batch_size=128, epochs=5, verbose=0):
+        callbacks = [  # keras.callbacks.ModelCheckpoint("best_model.h5", save_best_only=True, monitor="val_loss"),
+            tf.keras.callbacks.ReduceLROnPlateau(monitor="val_loss", factor=0.5, patience=15, min_lr=0.0001),
+            tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=15, verbose=1)]
         history = self.fit(x_train, y_train, batch_size=batch_size, epochs=epochs,
                            validation_data=(x_val, y_val),
                            verbose=verbose,
+                           callbacks=callbacks
                            )
         print("model training done")
         return history
