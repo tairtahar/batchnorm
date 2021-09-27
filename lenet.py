@@ -74,14 +74,14 @@ class LeNetBN1(LeNet):
     """Extends LeNet with batch normalization on the first convolutional layer. c1 is overrode to not have activation,
     then the following batchnorm layer affine1 is created"""
 
-    def __init__(self, input_shape, output_size, window):
+    def __init__(self, input_shape, output_size, epsilon, window):
         super().__init__(input_shape, output_size)
         self.c1 = layers.Conv2D(filters=6,
                                 input_shape=input_shape,
                                 kernel_size=(5, 5),
                                 padding='valid',
                                 )  # no activation
-        self.affine1 = BatchNormLayer([28, 28, 6], window)
+        self.affine1 = BatchNormLayer([28, 28, 6], epsilon, window)
 
     def call(self, inputs):
         x = self.c1(inputs)
@@ -101,12 +101,12 @@ class LeNetBN2(LeNetBN1):
      c3 is overrode to not have activation,
     then the following batchnorm layer affine3 is created"""
 
-    def __init__(self, input_shape, output_size, window):
+    def __init__(self, input_shape, output_size, epsilon, window):
         super().__init__(input_shape, output_size, window)
         self.c3 = layers.Conv2D(filters=16,
                                 kernel_size=(3, 3),
                                 padding='valid')  # no activation
-        self.affine2 = BatchNormLayer([12, 12, 16], window)
+        self.affine2 = BatchNormLayer([12, 12, 16], epsilon, window)
 
     def call(self, inputs):
         x = self.c1(inputs)
@@ -146,10 +146,9 @@ class BatchNormLayer(tf.keras.layers.Layer):
         self.moving_mean = []
         self.moving_variance = []
 
-    def call(self, inputs, training=None):  # Defines the computation from inputs to outputs
+    def call(self, inputs, epsilon=0.00000001, training=None):  # Defines the computation from inputs to outputs
         mu = K.mean(inputs, axis=(0, 1, 2), keepdims=True)
         variance = K.var(inputs, axis=(0, 1, 2), keepdims=True)
-        epsilon = 0.00000001
         outputs = batchnorm_calculations(self, mu, variance, inputs, epsilon, training)
         return outputs
 
@@ -159,10 +158,10 @@ class LeNetFCBN1(LeNetBN2):
     then the following batchnorm layer affine3 is created
     """
 
-    def __init__(self, input_shape, output_size, window):
+    def __init__(self, input_shape, output_size, epsilon, window):
         super().__init__(input_shape, output_size, window)
         self.c5 = layers.Dense(units=120)  # No activation
-        self.affine3 = BatchNormFCLayer(window)
+        self.affine3 = BatchNormFCLayer(epsilon, window)
 
     def call(self, inputs):
         x = self.c1(inputs)
@@ -184,10 +183,10 @@ class LeNetFCBN1(LeNetBN2):
 class LeNetFCBN2(LeNetFCBN1):
     """LeNet with batchnorm on 2 conv layers and 2 fully connected layers"""
 
-    def __init__(self, input_shape, output_size, window):
+    def __init__(self, input_shape, output_size, epsilon, window):
         super().__init__(input_shape, output_size, window)
         self.f6 = layers.Dense(units=84)  # No activation
-        self.affine4 = BatchNormFCLayer(window)
+        self.affine4 = BatchNormFCLayer(epsilon, window)
 
     def call(self, inputs):
         x = self.c1(inputs)
@@ -225,8 +224,7 @@ class BatchNormFCLayer(tf.keras.layers.Layer):  # for the case of fully connecte
         self.moving_mean = []
         self.moving_variance = []
 
-    def call(self, inputs, training=None):  # Defines the computation from inputs to outputs
-        epsilon = 0.00000001
+    def call(self, inputs, epsilon=0.00000001, training=None):  # Defines the computation from inputs to outputs
         mu = K.mean(inputs, axis=0)
         variance = K.var(inputs, axis=0)
         outputs = batchnorm_calculations(self, mu, variance, inputs, epsilon, training)

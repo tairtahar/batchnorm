@@ -15,6 +15,7 @@ def model_baseline(network):
                                               batch_size=args.batch_size,
                                               optimizer=args.optimizer,
                                               epochs=args.epochs,
+                                              epsilon=args.epsilon,
                                               window_size=args.window_size,
                                               verbose=args.verbose)
 

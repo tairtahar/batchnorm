@@ -33,6 +33,8 @@ def main():
     parser.add_argument("--output_size", help="output size", default=10)  # mnist has 10 possible classes
     parser.add_argument("--epochs", help="number of epochs", default=10)
     parser.add_argument("--optimizer", help="optimizer", default='adam')
+    parser.add_argument("--epsilon", help="number of epochs for moving standardization in inference time",
+                        default=0.00000001)
     parser.add_argument("--window_size", help="window size for averaging in batchnorm algorithm", default=5)
     parser.add_argument("--verbose", help="verbosity", default=1)
     parser.add_argument("--flag_visualizations", help="plot flag", default=1)
@@ -57,6 +59,7 @@ def main():
                                                   batch_size=args.batch_size,
                                                   optimizer=args.optimizer,
                                                   epochs=args.epochs,
+                                                  epsilon=args.epsilon,
                                                   window_size=args.window_size,
                                                   verbose=args.verbose)
         histories.append(history.history)
