@@ -13,7 +13,6 @@ def plot_accuracy(history):
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper left')
-    # plt.savefig('accuracy.pdf')
     plt.show()
 
 
@@ -24,13 +23,12 @@ def plot_loss(history):
     plt.ylabel('loss')
     plt.xlabel('epoch')
     plt.legend(['train', 'val'], loc='upper left')
-    # plt.savefig('loss.pdf')
     plt.show()
 
 
 def plot_accuracies(histories, networks):
     for i in range(len(histories)):
-        plt.plot(histories[i].history['accuracy'])
+        plt.plot(histories[i])
     plt.yticks(np.arange(0.5, 1, 0.02))
     plt.grid(which='major', linestyle=':', alpha=0.6)
     plt.ylim([0.7, 1])
@@ -38,5 +36,4 @@ def plot_accuracies(histories, networks):
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(networks, loc='lower right')
-    # plt.savefig('accuracy.pdf')
     plt.show()

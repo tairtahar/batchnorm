@@ -1,4 +1,4 @@
-from lenet import LeNet, LeNetBN1, LeNetBN2, LeNetFCBN1, LeNetFCBN2
+from lenet import LeNet, LeNetBN1, LeNetBN2, LeNetFCBN1, LeNetFCBN2, lenet_keras_BN
 
 
 def model_selection(network, input_shape, output_size, window_size):
@@ -14,9 +14,12 @@ def model_selection(network, input_shape, output_size, window_size):
     elif network == 'lenet_fc_bn1':
         print("Chosen network is LeNet with Batchnorm on first + second convolution layers + fully connected layer")
         lenet_model = LeNetFCBN1(input_shape=input_shape, output_size=output_size, window=window_size)
-    else:
+    elif network == 'lenet_fc_bn2':
         print("Chosen network is LeNet with Batchnorm on first + second convolution layers + 2 fully connected layers")
         lenet_model = LeNetFCBN2(input_shape=input_shape, output_size=output_size, window=window_size)
+    else:
+        print("Chosen network is LeNet with Keras built-in Batch normalization at all layers")
+        lenet_model = lenet_keras_BN(input_shape=input_shape)
 
     return lenet_model
 

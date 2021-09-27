@@ -5,6 +5,7 @@ import tensorflow.keras.backend as K
 
 class LeNet(tf.keras.Model):
     """Original LeNet network implementation"""
+
     def __init__(self, input_shape, output_size=10):
         super(LeNet, self).__init__()
         if input_shape is None:
@@ -70,6 +71,7 @@ class LeNet(tf.keras.Model):
 class LeNetBN1(LeNet):
     """Extends LeNet with batch normalization on the first convolutional layer. c1 is overrode to not have activation,
     then the following batchnorm layer affine1 is created"""
+
     def __init__(self, input_shape, output_size, window):
         super().__init__(input_shape, output_size)
         self.c1 = layers.Conv2D(filters=6,
@@ -96,6 +98,7 @@ class LeNetBN2(LeNetBN1):
     """Extends LeNetBN1 adding batch normalization also on the second convolutional layer.
      c3 is overrode to not have activation,
     then the following batchnorm layer affine3 is created"""
+
     def __init__(self, input_shape, output_size, window):
         super().__init__(input_shape, output_size, window)
         self.c3 = layers.Conv2D(filters=16,
@@ -128,6 +131,7 @@ class BatchNormLayer(tf.keras.layers.Layer):
     and testing is handled separately. For the training algorithm 1 from the paper is performed. For the testing case
     we are making use of the moving window averaging which is last part of the interference algorithm
     (algorithm 2 in the paper)"""
+
     def __init__(self, input_shape, window):
         super().__init__()
         gamma_init = tf.ones_initializer()
@@ -152,6 +156,7 @@ class LeNetFCBN1(LeNetBN2):
     """LeNet with batchnorm on 2 conv layers and first fully connected layer. c5 is overrode to not have activation,
     then the following batchnorm layer affine3 is created
     """
+
     def __init__(self, input_shape, output_size, window):
         super().__init__(input_shape, output_size, window)
         self.c5 = layers.Dense(units=120)  # No activation
@@ -176,6 +181,7 @@ class LeNetFCBN1(LeNetBN2):
 
 class LeNetFCBN2(LeNetFCBN1):
     """LeNet with batchnorm on 2 conv layers and 2 fully connected layers"""
+
     def __init__(self, input_shape, output_size, window):
         super().__init__(input_shape, output_size, window)
         self.f6 = layers.Dense(units=84)  # No activation
@@ -204,6 +210,7 @@ class BatchNormFCLayer(tf.keras.layers.Layer):  # for the case of fully connecte
     """ We create class variables such as gamma and beta to be trained. Also creating list of the accumulating
     tensors of moving_mean and moving_variance that are expected to grow up to window size. They are helpful for the
     last part of batchnorm algorithm where another affine transformation is performed using the averages """
+
     def __init__(self, window):
         super().__init__()
         gamma_init = tf.ones_initializer()
@@ -248,3 +255,40 @@ def batchnorm_calculations(curr_layer, mu, variance, inputs, epsilon, training):
         outputs = curr_layer.gamma / K.sqrt(current_mean_variances + epsilon) * inputs + \
                   (curr_layer.beta - curr_layer.gamma * current_mean_means / K.sqrt(current_mean_variances + epsilon))
     return outputs
+
+
+class lenet_keras_BN(LeNet):
+    def __init__(self, input_shape):
+        super().__init__(input_shape)
+        self.c1 = layers.Conv2D(filters=6,
+                                input_shape=input_shape,
+                                kernel_size=(5, 5),
+                                padding='valid',
+                                )  # no activation
+        self.affine1 = layers.BatchNormalization()
+        self.c3 = layers.Conv2D(filters=16,
+                                kernel_size=(3, 3),
+                                padding='valid')  # no activation
+        self.affine2 = layers.BatchNormalization()
+        self.c5 = layers.Dense(units=120)  # No activation
+        self.affine3 = layers.BatchNormalization()
+        self.f6 = layers.Dense(units=84)  # No activation
+        self.affine4 = layers.BatchNormalization()
+
+    def call(self, inputs):
+        x = self.c1(inputs)
+        x = self.affine1(x)
+        x = tf.keras.activations.sigmoid(x)
+        x = self.s2(x)
+        x = self.c3(x)
+        x = self.affine2(x)
+        x = tf.keras.activations.sigmoid(x)
+        x = self.s4(x)
+        x = self.flatten(x)
+        x = self.c5(x)
+        x = self.affine3(x)
+        x = tf.keras.activations.sigmoid(x)
+        x = self.f6(x)
+        x = self.affine4(x)
+        x = tf.keras.activations.sigmoid(x)
+        return self.output_layer(x)

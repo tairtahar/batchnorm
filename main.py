@@ -10,9 +10,9 @@ def main():
     data = utils.data_prepare()
 
     # Parameters definition. Please adjust params and choose a network
-    output_size = 10  # mnist has 10 possible classes
     parser = argparse.ArgumentParser()
     parser.add_argument("--batch_size", help="batch size", default=64)
+    parser.add_argument("--output_size", help="output size", default=10)  # mnist has 10 possible classes
     parser.add_argument("--epochs", help="number of epochs", default=10)
     parser.add_argument("--optimizer", help="optimizer", default='adam')
     parser.add_argument("--window_size", help="window size for averaging in batchnorm algorithm", default=5)
@@ -20,6 +20,10 @@ def main():
     parser.add_argument("--flag_visualizations", help="plot flag", default=1)
 
     args = parser.parse_args()
+
+    args_dict = vars(args)
+    with open('arguments', 'wb') as file_pi:
+        pickle.dump(args_dict, file_pi)
 
     '''You cab choose (copy to the next line) one of the following:
     (1)'lenet' (no BN) ; (2)'lenet_bn1' (first conv layer has BN) ; (3)'lenet_bn2' (first+second conv layers have BN);
@@ -31,13 +35,13 @@ def main():
         # Model creation and training
         history = models_handling.model_execution(network=network,
                                                   data=data,
-                                                  output_size=output_size,
+                                                  output_size=args.output_size,
                                                   batch_size=args.batch_size,
                                                   optimizer=args.optimizer,
                                                   epochs=args.epochs,
                                                   window_size=args.window_size,
                                                   verbose=args.verbose)
-        histories.append(history)
+        histories.append(history.history)
         # Visualizations of the training process
     if args.flag_visualizations:
         visualizations.plot_accuracies(histories, networks)
