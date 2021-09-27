@@ -44,6 +44,7 @@ class LeNet(tf.keras.Model):
         return self.output_layer(x)
 
     def model_compilation(self, optimizer):
+        """model compilation. Define optimizer and metric."""
         self.compile(optimizer=optimizer,
                      loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                      metrics=['accuracy'])
@@ -51,9 +52,9 @@ class LeNet(tf.keras.Model):
         print("compilation done")
 
     def train(self, x_train, y_train, x_val, y_val, batch_size=128, epochs=5, verbose=0):
-        callbacks = [  # keras.callbacks.ModelCheckpoint("best_model.h5", save_best_only=True, monitor="val_loss"),
-            tf.keras.callbacks.ReduceLROnPlateau(monitor="val_loss", factor=0.5, patience=15, min_lr=0.0001),
-            tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=15, verbose=1)]
+        """Define the callbacks and train the model"""
+        callbacks = [tf.keras.callbacks.ReduceLROnPlateau(monitor="val_loss", factor=0.5, patience=15, min_lr=0.0001),
+                     tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=15, verbose=1)]
         history = self.fit(x_train, y_train, batch_size=batch_size, epochs=epochs,
                            validation_data=(x_val, y_val),
                            verbose=verbose,
@@ -63,6 +64,7 @@ class LeNet(tf.keras.Model):
         return history
 
     def evaluation(self, x_test, y_test, verbose=0):
+        """Evaluation of model performance"""
         score = self.evaluate(x_test, y_test, verbose=verbose)
         print('test loss:', score[0])
         print('test accuracy:', score[1])
@@ -258,6 +260,9 @@ def batchnorm_calculations(curr_layer, mu, variance, inputs, epsilon, training):
 
 
 class lenet_keras_BN(LeNet):
+    """This class goal is to allow a validation to the batch normalization manual algorithm that was implemented in
+     this project, by defining the relevant layers built-in tf.keras batch normalization layer"""
+
     def __init__(self, input_shape):
         super().__init__(input_shape)
         self.c1 = layers.Conv2D(filters=6,

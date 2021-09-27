@@ -11,8 +11,9 @@ def load_data():
 
 
 def shuffle_data(x, y):
+    """This function receives data and labels and shuffles the them, then returns the shuffled data and the shuffled
+    labels accordingly"""
     indices = tf.range(start=0, limit=tf.shape(x)[0], dtype=tf.int32)
-    tf.random.set_seed(123)
     shuffled_indices = tf.random.shuffle(indices)
     shuffled_x = tf.gather(x, shuffled_indices)
     shuffled_y = tf.gather(y, shuffled_indices)
@@ -21,6 +22,8 @@ def shuffle_data(x, y):
 
 
 def divide_data(x, y, idx):
+    """This function receives data, labels, and idx (index), and returns the data received divided into two groups -
+    until the given index and from the given index till the end. Division on samples fits to the division on labels."""
     x_part1 = x[:idx, :, :]
     x_part2 = x[idx:, :, :]
     y_part1 = y[:idx]

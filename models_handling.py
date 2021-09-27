@@ -2,6 +2,8 @@ from lenet import LeNet, LeNetBN1, LeNetBN2, LeNetFCBN1, LeNetFCBN2, lenet_keras
 
 
 def model_selection(network, input_shape, output_size, window_size):
+    """This function receives current chosen notwork and parameters to be used for network initialization, and returns
+    an instance of the chosen network"""
     if network == 'lenet':
         print("Chosen network is LeNet")
         lenet_model = LeNet(input_shape=input_shape, output_size=output_size)

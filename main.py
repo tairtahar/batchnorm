@@ -6,6 +6,24 @@ import pickle
 
 
 def main():
+    """main function is in charge of training the different networks tested and compared. The evaluation of the
+    performance is done over mnist database.
+    The networks are based on LeNet architecture and they differ by the batch normalization layers: In the first
+    network tested there is no batch normalization layer, the second network has batch normalization on the first layer,
+     the third has batch normalization on the first two layers and so on until the last network that has batch
+     normalization in all the layers.
+    There are several parameters that are set to default values, but they can be changed by the user when execution the
+    program. More information regarding them is presented when using help.
+    batch_size - batch size for training
+    output_size - in the case of mnist should be 10
+    epochs - number of epochs for the training
+    optimizer - optimizer for the training, default 'adam'
+    window_size - In inference time batch norm standardization is performed over moving window of window_size (number)
+    of epochs
+    verbose - whether to print the training details
+    flag_visualization - 1 in case that we want to visualize the results on a graph
+    """
+
     # Data loading and preprocessing
     data = utils.data_prepare()
 
