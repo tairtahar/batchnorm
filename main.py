@@ -22,7 +22,7 @@ def main():
     args = parser.parse_args()
 
     args_dict = vars(args)
-    with open('arguments', 'wb') as file_pi:
+    with open('temp_data/arguments', 'wb') as file_pi:
         pickle.dump(args_dict, file_pi)
 
     '''You cab choose (copy to the next line) one of the following:
@@ -46,7 +46,7 @@ def main():
     if args.flag_visualizations:
         visualizations.plot_accuracies(histories, networks)
 
-    with open('trainHistoryDict', 'wb') as file_pi:
+    with open('temp_data/trainHistoryDict', 'wb') as file_pi:
         pickle.dump(history.history, file_pi)
 
 
