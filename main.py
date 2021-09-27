@@ -2,6 +2,7 @@ import models_handling
 import utils
 import visualizations
 import argparse
+import pickle
 
 
 def main():
@@ -9,17 +10,10 @@ def main():
     data = utils.data_prepare()
 
     # Parameters definition. Please adjust params and choose a network
-    # batch_size = 64
-    # epochs = 10
     output_size = 10  # mnist has 10 possible classes
-    # optimizer = 'adam'
-    # window_size = 5  # for the moving average in the last part of batchnorm algorithm
-    # verbose = 1
-    # flag_visualizations = 1
     parser = argparse.ArgumentParser()
     parser.add_argument("--batch_size", help="batch size", default=64)
     parser.add_argument("--epochs", help="number of epochs", default=10)
-    # parser.add_argument("output_size", help="echo the string you use here", default=10)
     parser.add_argument("--optimizer", help="optimizer", default='adam')
     parser.add_argument("--window_size", help="window size for averaging in batchnorm algorithm", default=5)
     parser.add_argument("--verbose", help="verbosity", default=1)
@@ -47,7 +41,9 @@ def main():
         # Visualizations of the training process
     if args.flag_visualizations:
         visualizations.plot_accuracies(histories, networks)
-        # visualizations.plot_loss(history)
+
+    with open('trainHistoryDict', 'wb') as file_pi:
+        pickle.dump(history.history, file_pi)
 
 
 if __name__ == '__main__':
