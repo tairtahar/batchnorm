@@ -102,7 +102,7 @@ class LeNetBN2(LeNetBN1):
     then the following batchnorm layer affine3 is created"""
 
     def __init__(self, input_shape, output_size, epsilon, window):
-        super().__init__(input_shape, output_size, window)
+        super().__init__(input_shape, output_size, epsilon, window)
         self.c3 = layers.Conv2D(filters=16,
                                 kernel_size=(3, 3),
                                 padding='valid')  # no activation
@@ -134,7 +134,7 @@ class BatchNormLayer(tf.keras.layers.Layer):
     we are making use of the moving window averaging which is last part of the interference algorithm
     (algorithm 2 in the paper)"""
 
-    def __init__(self, input_shape, window):
+    def __init__(self, input_shape, epsilon, window):
         super().__init__()
         gamma_init = tf.ones_initializer()
         self.gamma = tf.Variable(
@@ -143,13 +143,14 @@ class BatchNormLayer(tf.keras.layers.Layer):
         self.beta = tf.Variable(
             initial_value=beta_init(shape=input_shape, dtype='float32'), trainable=True)
         self.window = window
+        self.epsilon = epsilon
         self.moving_mean = []
         self.moving_variance = []
 
-    def call(self, inputs, epsilon=0.00000001, training=None):  # Defines the computation from inputs to outputs
+    def call(self, inputs, training=None):  # Defines the computation from inputs to outputs
         mu = K.mean(inputs, axis=(0, 1, 2), keepdims=True)
         variance = K.var(inputs, axis=(0, 1, 2), keepdims=True)
-        outputs = batchnorm_calculations(self, mu, variance, inputs, epsilon, training)
+        outputs = batchnorm_calculations(self, mu, variance, inputs, training)
         return outputs
 
 
@@ -159,7 +160,7 @@ class LeNetFCBN1(LeNetBN2):
     """
 
     def __init__(self, input_shape, output_size, epsilon, window):
-        super().__init__(input_shape, output_size, window)
+        super().__init__(input_shape, output_size, epsilon, window)
         self.c5 = layers.Dense(units=120)  # No activation
         self.affine3 = BatchNormFCLayer(epsilon, window)
 
@@ -184,7 +185,7 @@ class LeNetFCBN2(LeNetFCBN1):
     """LeNet with batchnorm on 2 conv layers and 2 fully connected layers"""
 
     def __init__(self, input_shape, output_size, epsilon, window):
-        super().__init__(input_shape, output_size, window)
+        super().__init__(input_shape, output_size, epsilon, window)
         self.f6 = layers.Dense(units=84)  # No activation
         self.affine4 = BatchNormFCLayer(epsilon, window)
 
@@ -212,7 +213,7 @@ class BatchNormFCLayer(tf.keras.layers.Layer):  # for the case of fully connecte
     tensors of moving_mean and moving_variance that are expected to grow up to window size. They are helpful for the
     last part of batchnorm algorithm where another affine transformation is performed using the averages """
 
-    def __init__(self, window):
+    def __init__(self, epsilon, window):
         super().__init__()
         gamma_init = tf.ones_initializer()
         self.gamma = tf.Variable(
@@ -221,24 +222,25 @@ class BatchNormFCLayer(tf.keras.layers.Layer):  # for the case of fully connecte
         self.beta = tf.Variable(
             initial_value=beta_init(shape=[1], dtype='float32'), trainable=True)
         self.window = window
+        self.epsilon = epsilon
         self.moving_mean = []
         self.moving_variance = []
 
-    def call(self, inputs, epsilon=0.00000001, training=None):  # Defines the computation from inputs to outputs
+    def call(self, inputs, training=None):  # Defines the computation from inputs to outputs
         mu = K.mean(inputs, axis=0)
         variance = K.var(inputs, axis=0)
-        outputs = batchnorm_calculations(self, mu, variance, inputs, epsilon, training)
+        outputs = batchnorm_calculations(self, mu, variance, inputs, training)
         return outputs
 
 
-def batchnorm_calculations(curr_layer, mu, variance, inputs, epsilon, training):
+def batchnorm_calculations(curr_layer, mu, variance, inputs, training):
     """This function contains the needed calculations for the the inference model
     if we are in the training stage, than we create a layer with the affine transformation to create y from x_hat
     (in the paper this is algorithm 1).
     Then in the case of testing, we perform calculation for the moving average. This is the last part of algorithm 2
      in the paper. This function is used for both the convolutional case and the fully connected case"""
     if training:  # In case of training, perform batch normalization to learn beta and gamma
-        x_hat = (inputs - mu) / K.sqrt(variance + epsilon)
+        x_hat = (inputs - mu) / K.sqrt(variance + curr_layer.epsilon)
         outputs = curr_layer.gamma * x_hat + curr_layer.beta
     else:  # In case of testing - calculation of the inference model
         curr_layer.moving_mean.append(mu)
@@ -252,8 +254,9 @@ def batchnorm_calculations(curr_layer, mu, variance, inputs, epsilon, training):
         else:  # In the regular case we calculate the mean and variance according to the given in the paper
             current_mean_means = tf.keras.layers.Average()(curr_layer.moving_mean)
             current_mean_variances = inputs.shape[0] / (inputs.shape[0] - 1) * K.mean(curr_layer.moving_variance)
-        outputs = curr_layer.gamma / K.sqrt(current_mean_variances + epsilon) * inputs + \
-                  (curr_layer.beta - curr_layer.gamma * current_mean_means / K.sqrt(current_mean_variances + epsilon))
+        outputs = curr_layer.gamma / K.sqrt(current_mean_variances + curr_layer.epsilon) * inputs + \
+                  (curr_layer.beta - curr_layer.gamma * current_mean_means / K.sqrt(current_mean_variances +
+                                                                                    curr_layer.epsilon))
     return outputs
 
 

@@ -62,7 +62,7 @@ def main():
                                                   epsilon=args.epsilon,
                                                   window_size=args.window_size,
                                                   verbose=args.verbose)
-        histories.append(history.history)
+        histories.append(list(history.history['accuracy']))
         # Visualizations of the training process
     if args.flag_visualizations:
         visualizations.plot_accuracies(histories, networks)
