@@ -66,8 +66,18 @@ class LeNet(tf.keras.Model):
 
         print("compilation done")
 
-    def train(self, x_train, y_train, x_val, y_val, batch_size=128, epochs=5, verbose=0):
-        """Define the callbacks and train the model"""
+    def train(self, x_train, y_train, x_val, y_val, batch_size, epochs=5, verbose=0):
+        """
+        Define the callbacks and train the model
+        :param x_train: input images for training
+        :param y_train: classes for training
+        :param x_val: input images for validation
+        :param y_val: classes for validation
+        :param batch_size: Batch size for training
+        :param epochs: number of epochs for training
+        :param verbose: verbosity of training process
+        :return: history of training
+        """
         callbacks = [tf.keras.callbacks.ReduceLROnPlateau(monitor="val_loss", factor=0.5, patience=15, min_lr=0.0001),
                      tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=15, verbose=1)]
         history = self.fit(x_train, y_train, batch_size=batch_size, epochs=epochs,
@@ -79,7 +89,13 @@ class LeNet(tf.keras.Model):
         return history
 
     def evaluation(self, x_test, y_test, verbose=0):
-        """Evaluation of model performance"""
+        """
+        Evaluation of model performance
+        :param x_test: input images for testing
+        :param y_test: ground truth for testing
+        :param verbose: verbosity for testing phase
+        :return: NA
+        """
         score = self.evaluate(x_test, y_test, verbose=verbose)
         print('test loss:', score[0])
         print('test accuracy:', score[1])
