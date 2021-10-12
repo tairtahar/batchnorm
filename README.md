@@ -1,16 +1,17 @@
-![TF] (/https://img.shields.io/badge/TensorFlow-2.6.0-yellowgreen)
+![TF] (https://img.shields.io/badge/TensorFlow-2.6.0-yellowgreen)
+
 
 
 
 # Batch Normalization Over LeNet
-
+Cancel changes
 This project is an implementation from scratch of batch normalization in *LeNet* network using *tensorflow.keras* on *mnist* dataset. The goal is to learn and characterize batch normalization impact on a neural network performance.
 
-image ![LeNet] (/LeNet.PNG)
+![LeNet] (/LeNet.PNG)
 
-## 
 
-###Main arguments are possible to adjust:
+
+### Main arguments are possible to adjust:
 
 | Parameter           | Explanation                              | Default    |
 | ------------------- | ---------------------------------------- | ---------- |
@@ -41,11 +42,11 @@ image ![LeNet] (/LeNet.PNG)
 
 
 
-##Citing
+### Citing
 
 > Ioffe, Sergey, and Christian Szegedy. "Batch normalization: Accelerating deep network training by reducing internal covariate shift." In *International conference on machine learning*, pp. 448-456. PMLR, 2015.
 
-> ```tex
+> ```latex
 > @inproceedings{ioffe2015batch,
 >   title={Batch normalization: Accelerating deep network training by reducing internal covariate shift},
 >   author={Ioffe, Sergey and Szegedy, Christian},
