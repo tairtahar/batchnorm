@@ -44,16 +44,16 @@ This project is an implementation from scratch of batch normalization in *LeNet*
 
 > Ioffe, Sergey, and Christian Szegedy. "Batch normalization: Accelerating deep network training by reducing internal covariate shift." In *International conference on machine learning*, pp. 448-456. PMLR, 2015.
 
-> ```latex
-> @inproceedings{ioffe2015batch,
->   title={Batch normalization: Accelerating deep network training by reducing internal covariate shift},
->   author={Ioffe, Sergey and Szegedy, Christian},
->   booktitle={International conference on machine learning},
->   pages={448--456},
->   year={2015},
->   organization={PMLR}
-> }
-> ```
+ ```latex
+ @inproceedings{ioffe2015batch,
+   title={Batch normalization: Accelerating deep network training by reducing internal covariate shift},
+   author={Ioffe, Sergey and Szegedy, Christian},
+   booktitle={International conference on machine learning},
+   pages={448--456},
+   year={2015},
+   organization={PMLR}
+ }
+ ```
 
 
 
