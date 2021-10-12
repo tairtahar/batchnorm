@@ -2,7 +2,6 @@
 
 
 # Batch Normalization Over LeNet
-Cancel changes
 This project is an implementation from scratch of batch normalization in *LeNet* network using *tensorflow.keras* on *mnist* dataset. The goal is to learn and characterize batch normalization impact on a neural network performance.
 
 ![LeNet](/LeNet.PNG)
