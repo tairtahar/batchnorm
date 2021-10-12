@@ -6,7 +6,12 @@ import tensorflow.keras.backend as K
 class LeNet(tf.keras.Model):
     """Original LeNet network implementation"""
 
-    def __init__(self, input_shape, output_size=10):
+    def __init__(self, input_shape: int, output_size=10):
+        """
+        Initialization function for a LeNet instance
+        :param input_shape: network inputs images shape
+        :param output_size: number of possible classes for the classification
+        """
         super(LeNet, self).__init__()
         if input_shape is None:
             input_shape = (32, 32, 1)
@@ -34,6 +39,12 @@ class LeNet(tf.keras.Model):
             activation=tf.nn.softmax)
 
     def call(self, inputs, training=False):
+        """
+        When training/testing the network, this function is called.
+        :param inputs: The network inputs images
+        :param training: flag for training/testing time. When True then it is training. When False it is inference time.
+        :return: This function returns the outputs of the network after processing
+        """
         x = self.c1(inputs)
         x = self.s2(x)
         x = self.c3(x)
@@ -43,8 +54,12 @@ class LeNet(tf.keras.Model):
         x = self.f6(x)
         return self.output_layer(x)
 
-    def model_compilation(self, optimizer):
-        """model compilation. Define optimizer and metric."""
+    def model_compilation(self, optimizer: str):
+        """
+        model compilation. Define optimizer and metric.
+        :param optimizer: can be any of keras optimizers such as adam/ adagrad etc.
+        :return: NA
+        """
         self.compile(optimizer=optimizer,
                      loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                      metrics=['accuracy'])
@@ -209,12 +224,19 @@ class LeNetFCBN2(LeNetFCBN1):
 
 
 class BatchNormFCLayer(tf.keras.layers.Layer):  # for the case of fully connected (1D inputs)
-    """ We create class variables such as gamma and beta to be trained. Also creating list of the accumulating
+    """
+    We create class variables such as gamma and beta to be trained. Also creating list of the accumulating
     tensors of moving_mean and moving_variance that are expected to grow up to window size. They are helpful for the
-    last part of batchnorm algorithm where another affine transformation is performed using the averages """
+    last part of batchnorm algorithm where another affine transformation is performed using the averages
+    """
 
     def __init__(self, epsilon, window):
+        """
+        :param epsilon:
+        :param window:
+        """
         super().__init__()
+
         gamma_init = tf.ones_initializer()
         self.gamma = tf.Variable(
             initial_value=gamma_init(shape=[1], dtype='float32'), trainable=True)
@@ -233,12 +255,20 @@ class BatchNormFCLayer(tf.keras.layers.Layer):  # for the case of fully connecte
         return outputs
 
 
-def batchnorm_calculations(curr_layer, mu, variance, inputs, training):
-    """This function contains the needed calculations for the the inference model
+def batchnorm_calculations(curr_layer, mu: float, variance, inputs, training):
+    """
+    This function contains the needed calculations for the the inference model
     if we are in the training stage, than we create a layer with the affine transformation to create y from x_hat
     (in the paper this is algorithm 1).
     Then in the case of testing, we perform calculation for the moving average. This is the last part of algorithm 2
-     in the paper. This function is used for both the convolutional case and the fully connected case"""
+     in the paper. This function is used for both the convolutional case and the fully connected case
+    :param curr_layer:
+    :param mu:
+    :param variance:
+    :param inputs:
+    :param training:
+    :return:
+    """
     if training:  # In case of training, perform batch normalization to learn beta and gamma
         x_hat = (inputs - mu) / K.sqrt(variance + curr_layer.epsilon)
         outputs = curr_layer.gamma * x_hat + curr_layer.beta

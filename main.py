@@ -29,15 +29,15 @@ def main():
 
     # Parameters definition. Please adjust params and choose a network
     parser = argparse.ArgumentParser()
-    parser.add_argument("--batch_size", help="batch size", default=64)
-    parser.add_argument("--output_size", help="output size", default=10)  # mnist has 10 possible classes
-    parser.add_argument("--epochs", help="number of epochs", default=10)
-    parser.add_argument("--optimizer", help="optimizer", default='adam')
-    parser.add_argument("--epsilon", help="number of epochs for moving standardization in inference time",
+    parser.add_argument("--batch_size", help="batch size for training", default=64)
+    parser.add_argument("--output_size", help="output size, number of classes", default=10)  # mnist has 10 possible classes
+    parser.add_argument("--epochs", help="number of epochs for training", default=10)
+    parser.add_argument("--optimizer", help="optimizer for training", default='adam')
+    parser.add_argument("--epsilon", help="number of epochs for moving standardization during inference time",
                         default=0.00000001)
     parser.add_argument("--window_size", help="window size for averaging in batchnorm algorithm", default=5)
     parser.add_argument("--verbose", help="verbosity", default=1)
-    parser.add_argument("--flag_visualizations", help="plot flag", default=1)
+    parser.add_argument("--flag_visualizations", help="flag for presenting plots of the training process", default=1)
 
     args = parser.parse_args()
 

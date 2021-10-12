@@ -7,7 +7,7 @@ from types import SimpleNamespace
 
 def model_baseline(network):
     data = utils.data_prepare()
-    args_saved = pickle.load(open('temp_data/arguments', "rb"))
+    args_saved = pickle.load(open('../temp_data/arguments', "rb"))
     args = SimpleNamespace(**args_saved)
     history = models_handling.model_execution(network=network,
                                               data=data,
@@ -23,7 +23,7 @@ def model_baseline(network):
 
 
 def comparison_keras_batchnorm():
-    history = pickle.load(open('temp_data/trainHistoryDict', "rb"))['accuracy']
+    history = pickle.load(open('../temp_data/trainHistoryDict', "rb"))['accuracy']
     histories = list()
     histories.append(history)
     network = 'keras'
