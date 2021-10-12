@@ -1,4 +1,4 @@
-![TF](https://img.shields.io/badge/TensorFlow-2.6.0-yellowgreen)
+![TF](https://img.shields.io/badge/TensorFlow-2.6.0-yellowgreen)  ![python](https://img.shields.io/badge/Python-3.6-orange)
 
 
 # Batch Normalization Over LeNet
