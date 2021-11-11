@@ -1,8 +1,7 @@
-![TF](https://img.shields.io/badge/TensorFlow-2.6.0-yellowgreen)
+![TF](https://img.shields.io/badge/TensorFlow-2.6.0-yellowgreen)  ![python](https://img.shields.io/badge/Python-3.6-orange)
 
 
 # Batch Normalization Over LeNet
-Cancel changes
 This project is an implementation from scratch of batch normalization in *LeNet* network using *tensorflow.keras* on *mnist* dataset. The goal is to learn and characterize batch normalization impact on a neural network performance.
 
 ![LeNet](/LeNet.PNG)
