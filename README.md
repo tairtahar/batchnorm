@@ -37,7 +37,9 @@ This project is an implementation from scratch of batch normalization in *LeNet*
    e. visualizations.py - where the functions for plotting accuracy and loss graphs are.
 5. results - where it is possible to visualize the training and validation accuracy during the training of each of the networks used.
 
+Comparing the performance of LeNet with additions of BatchNormalization layers:
 
+![results](results/Comparison.png)
 
 ### Citing
 
