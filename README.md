@@ -41,6 +41,10 @@ Comparing the performance of LeNet with additions of BatchNormalization layers:
 
 ![results](results/Comparison.png)
 
+The best results are for LeNet with BatchNormalization on each of the layers, both fully connected and convolutional layers. 
+
+
+
 ### Citing
 
 > Ioffe, Sergey, and Christian Szegedy. "Batch normalization: Accelerating deep network training by reducing internal covariate shift." In *International conference on machine learning*, pp. 448-456. PMLR, 2015.
