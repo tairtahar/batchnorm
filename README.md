@@ -41,7 +41,7 @@ Comparing the performance of LeNet with additions of BatchNormalization layers:
 
 ![results](results/Comparison.png)
 
-The best results are for LeNet with BatchNormalization on each of the layers, both fully connected and convolutional layers. 
+The best results are for LeNet with BatchNormalization on each of the layers, both fully connected and convolutional layers. However BatchNormalization on the last (fully connected) layer does not seem to be very significant. In general there is an evident trend that shows that BatchNormalization both accelerate the learning and increases the final accuracy. 
 
 
 
