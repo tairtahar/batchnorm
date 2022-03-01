@@ -37,7 +37,7 @@ Markdown==3.3.4
 matplotlib @ file:///C:/ci/matplotlib-suite_1613408055530/work
 nest-asyncio==1.5.1
 networkx==2.5.1
-numpy==1.19.5
+numpy==1.21
 oauthlib==3.1.1
 olefile==0.46
 opencv-python-headless==4.5.4.58
