@@ -4,7 +4,6 @@ import tensorflow.keras.backend as K
 
 
 class LeNet(tf.keras.Model):
-    """LeNet network implementation"""
 
     def __init__(self, input_shape: int, output_size=10):
         """
